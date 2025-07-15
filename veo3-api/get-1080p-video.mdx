@@ -1,0 +1,101 @@
+---
+openapi: get /api/v1/veo/get-1080p-video
+---
+
+Get the high-definition 1080P version of a Veo3 video generation task.
+
+## Usage Instructions
+
+- **16:9 Aspect Ratio Only**: Only videos with 16:9 aspect ratio support 1080P HD video generation
+- **Automatic Generation**: After the original video generation is successful, the system will automatically start generating the 1080P HD version
+- **Additional Processing Time**: 1080P video generation requires additional processing time, please wait some time after the original video generation is completed before calling this endpoint
+- **Status Check**: If the 1080P video is not ready yet, the endpoint may return error information
+
+<Warning>
+Only successfully generated video tasks can obtain 1080P versions. We recommend waiting a few minutes after receiving the video generation success callback before calling this endpoint.
+</Warning>
+
+## Request Example
+
+```bash
+GET /api/v1/veo/get-1080p-video?taskId=veo_task_abcdef123456&index=0
+```
+
+### Parameters
+
+<ParamField query="taskId" type="string" required>
+Task ID obtained through the video generation interface
+</ParamField>
+
+<ParamField query="index" type="integer">
+Video index, defaults to 0. Used to specify which video's 1080P version to retrieve
+</ParamField>
+
+## Response Fields
+
+<ParamField path="code" type="integer" required>
+Response status code indicating the result of the request.
+
+**Status Codes:**
+- **200**: Success - Request has been processed successfully, 1080P video is ready
+- **401**: Unauthorized - Authentication credentials are missing or invalid
+- **404**: Not Found - The requested resource or endpoint does not exist
+- **422**: Validation Error - Request parameters failed validation checks / Record is null / Temporarily supports records within 14 days / Record result data is blank / Record status is not success / Record result data not exist / Record result data is empty
+- **429**: Rate Limited - Request limit has been exceeded for this resource
+- **451**: Failed to fetch the image. Please verify any access limits set by you or your service provider
+- **455**: Service Unavailable - System is currently undergoing maintenance
+- **500**: Server Error - An unexpected error occurred while processing the request
+</ParamField>
+
+<ParamField path="msg" type="string">
+Error message when code != 200, or "success" when the request is successful.
+</ParamField>
+
+<ParamField path="data.resultUrl" type="string">
+1080P high-definition video download URL. This is the final HD video file that can be downloaded.
+</ParamField>
+
+## Success Response Example
+<ResponseExample>
+```json 200 - Success
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "resultUrl": "https://tempfile.aiquickdraw.com/p/42f4f8facbb040c0ade87c27cb2d5e58_1749711595.mp4"
+  }
+}
+```
+</ResponseExample>
+
+## Usage Workflow
+
+<Steps>
+<Step title="Generate Video">
+Use the video generation interface to create a video task, ensuring you select `aspectRatio: "16:9"`
+</Step>
+
+<Step title="Wait for Completion">
+Confirm that the original video generation is successful through callback notification or query interface
+</Step>
+
+<Step title="Wait for 1080P Processing">
+Wait a few minutes for the system to generate the 1080P HD version
+
+<Note>
+1080P video generation typically requires an additional 1-3 minutes of processing time
+</Note>
+</Step>
+
+<Step title="Get 1080P Video">
+Call this interface to get the HD video download link
+
+<Check>
+Successfully obtain 1080P video download URL
+</Check>
+</Step>
+</Steps>
+
+<Tip>
+If the interface returns an error, it indicates that the 1080P video may still be processing. Please wait some time and retry.
+</Tip>

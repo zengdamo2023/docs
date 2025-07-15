@@ -1,0 +1,16 @@
+---
+openapi: get /api/v1/veo/record-info
+---
+
+Query the execution status and results of Veo3 video generation tasks.
+
+## Task Status Description
+
+- **0**: Generating - Task is currently being processed
+- **1**: Success - Task completed successfully
+- **2**: Failed - Task generation failed  
+- **3**: Generation Failed - Task created successfully but generation failed
+
+## Usage
+
+Use the task ID (`taskId`) to query task status in real-time. We recommend periodic polling until task completion.
